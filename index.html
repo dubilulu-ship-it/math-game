@@ -3,57 +3,59 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>חיבור עד 20 – שני סלים (קול)</title>
+<title>חיבור עד 20 – שני סלים (גרירה מתוקן)</title>
 <style>
-  :root{ --fruit: 46px; --gap: 8px; }
-  body{margin:0;font-family:Arial,sans-serif;
-       background:linear-gradient(180deg,#eaf4ff 0%,#f6fbff 40%);}
+  :root{ --fruit:52px; --gap:8px; }
+  body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#eaf4ff 0%,#f6fbff 40%);}
   .app{max-width:1100px;margin:auto;padding:18px;display:grid;gap:16px}
-  header{background:#fff;border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-  .title{font-size:22px;font-weight:800;display:flex;gap:8px;align-items:center}
+  header{background:#fff;border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+  .title{font-size:22px;font-weight:800}
   .btn{padding:8px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-  .btn.primary{background:#2563eb;color:#fff}
-  .btn.ghost{background:#e8f0ff}
-  .board{display:grid;grid-template-columns:1fr 0.8fr;gap:16px}
+  .btn.primary{background:#2563eb;color:#fff}.btn.ghost{background:#e8f0ff}
+  .board{display:grid;grid-template-columns:1fr .9fr;gap:16px}
   @media(max-width:900px){.board{grid-template-columns:1fr}}
   .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+
   .eq{font-size:28px;font-weight:900}
   .status{background:#eef7ff;color:#1e3a8a;padding:4px 10px;border-radius:999px;font-weight:700}
+
   .tray{min-height:150px;border:2px dashed #c7d2fe;border-radius:16px;padding:12px;background:#f8fbff}
   .grid{display:flex;flex-wrap:wrap;gap:var(--gap)}
   .fruit{width:var(--fruit);height:var(--fruit);display:flex;align-items:center;justify-content:center;
          font-size:calc(var(--fruit)*0.65);background:#fff;border:1px solid #ddd;border-radius:14px;
-         cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+         cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.12);user-select:none;touch-action:none;transition:transform .12s}
   .fruit:active{transform:scale(1.05)}
+
   .baskets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:700px){.baskets{grid-template-columns:1fr}}
-  .basket{position:relative;min-height:240px;border-radius:18px;overflow:hidden;
-          border:2px solid #c08552;background:#fff8f0;padding:12px;isolation:isolate}
+
+  /* סל – מראה נקי, ידית קטנה, שכבות מסודרות */
+  .basket{position:relative;min-height:240px;border-radius:18px;overflow:hidden;border:2px solid #c08552;background:#fff8f0;padding:12px;isolation:isolate}
   .basket .label{position:relative;z-index:4;font-weight:900;color:#7c4a2b;margin-bottom:6px}
   .basket::before{content:"";position:absolute;inset:18% 6% 10% 6%;z-index:0;pointer-events:none;
-    background:repeating-linear-gradient(90deg,#d7a273 0 28px,#bd8456 28px 56px),
-               repeating-linear-gradient(#bd8456 0 28px,#d7a273 28px 56px);
-    border-radius:14px;opacity:.9}
+    background:
+      linear-gradient( 90deg,#d7a273 22%,#bd8456 22% 28%,#d7a273 28% 50%,#bd8456 50% 56%,#d7a273 56% 78%,#bd8456 78% 84%,#d7a273 84%) 0 0/56px 18px,
+      linear-gradient(   0deg,#bd8456 22%,#d7a273 22% 28%,#bd8456 28% 50%,#d7a273 50% 56%,#bd8456 56% 78%,#d7a273 78% 84%,#bd8456 84%) 0 0/56px 18px;
+    border-radius:14px;box-shadow:inset 0 -20px 30px rgba(0,0,0,.05)}
   .basket .inner{position:absolute;inset:22% 8% 8% 8%;z-index:1}
-  .basket::after{content:"";position:absolute;left:5%;right:5%;top:6%;height:28px;z-index:2;
-    background:linear-gradient(180deg,#e9b789,#cc905f);border-radius:18px/14px}
+  .basket .inner .grid{justify-content:flex-start}
+  .basket::after{content:"";position:absolute;left:5%;right:5%;top:6%;height:30px;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,#e9b789,#cc905f);border-radius:18px/14px;box-shadow:inset 0 2px 0 #f4d1ae,0 6px 10px rgba(0,0,0,.18)}
   .handle{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
     width:40%;height:40px;border:6px solid #cc905f;border-bottom:none;border-radius:999px}
+
   .answers{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
   .opt{flex:1;min-width:80px;background:#eef2f7;border:2px solid transparent;border-radius:12px;padding:10px;
-       font-size:20px;font-weight:800;cursor:pointer}
+       font-size:20px;font-weight:800;cursor:pointer;transition:.15s}
+  .opt:hover{transform:translateY(-1px)}
   .opt.correct{background:#ecfdf5;border-color:#10b981;color:#065f46}
   .opt.wrong{background:#fef2f2;border-color:#ef4444;color:#991b1b}
-  .stats{display:flex;gap:10px;margin-top:10px}
-  .pill{flex:1;background:#eef2f7;border-radius:10px;padding:8px;text-align:center;font-weight:700}
-  .pill.good{background:#ecfdf5;color:#065f46}
-  .pill.bad{background:#fef2f2;color:#991b1b}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="title">🍎 חיבור עד 20 – שני סלים (קול)</div>
+    <div class="title">🍎 חיבור עד 20 – שני סלים (גרירה מתוקן)</div>
     <div>
       <button id="empty" class="btn ghost">רוקן סלים</button>
       <button id="newRound" class="btn primary">סיבוב חדש</button>
@@ -62,118 +64,200 @@
 
   <main class="board">
     <section class="card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div class="eq" id="equation">? + ? = ?</div>
-        <div class="status" id="status">מוכן</div>
+        <div class="status" id="status">הכניסו לכל סל את הכמות המתאימה, ואז בחרו תשובה.</div>
       </div>
 
       <h4>מגש תפוחים</h4>
-      <div class="tray grid" id="tray"></div>
+      <div class="tray grid" id="tray" aria-label="מגש תפוחים"></div>
 
       <div class="baskets">
-        <div class="basket" id="basketA">
-          <div class="handle"></div>
+        <div class="basket" id="basketA" aria-label="סל A">
+          <div class="handle" aria-hidden="true"></div>
           <div class="label">סל A</div>
           <div class="inner"><div class="grid" id="gridA"></div></div>
         </div>
-        <div class="basket" id="basketB">
-          <div class="handle"></div>
+        <div class="basket" id="basketB" aria-label="סל B">
+          <div class="handle" aria-hidden="true"></div>
           <div class="label">סל B</div>
           <div class="inner"><div class="grid" id="gridB"></div></div>
         </div>
       </div>
 
       <div class="answers" id="answers"></div>
-      <div class="stats">
-        <div class="pill good">ניצחונות: <span id="wins">0</span></div>
-        <div class="pill bad">ניסיונות: <span id="misses">0</span></div>
-      </div>
+      <div>ניצחונות: <span id="wins">0</span> | ניסיונות: <span id="misses">0</span></div>
     </section>
   </main>
 </div>
 
 <script>
-/* DOM */
+/* ===== DOM ===== */
 const $=s=>document.querySelector(s);
-const tray=$("#tray"),eqEl=$("#equation"),statusEl=$("#status"),answers=$("#answers");
-const wins=$("#wins"),misses=$("#misses"),gridA=$("#gridA"),gridB=$("#gridB");
-const basketA=$("#basketA"),basketB=$("#basketB");
+const tray=$("#tray"), eqEl=$("#equation"), statusEl=$("#status"), answers=$("#answers");
+const wins=$("#wins"), misses=$("#misses");
+const gridA=$("#gridA"), gridB=$("#gridB");
+const basketA=$("#basketA"), basketB=$("#basketB");
+
+/* ===== מצב משחק ===== */
 let state={a:0,b:0,sum:0,wins:0,misses:0};
 
-/* דיבור בקול */
+/* ===== דיבור ===== */
 function speak(text){
-  const utter=new SpeechSynthesisUtterance(text);
-  utter.lang="he-IL"; utter.rate=1; utter.pitch=1;
-  speechSynthesis.speak(utter);
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="he-IL"; u.rate=1; u.pitch=1;
+  speechSynthesis.speak(u);
 }
 
-/* קונפטי */
-function confetti(n=80){
+/* ===== קונפטי ===== */
+function confetti(n=100){
   for(let i=0;i<n;i++){
     const s=document.createElement("div");
     const size=18+Math.random()*20;
-    s.style.position="fixed";s.style.width=size+"px";s.style.height=size+"px";
+    s.style.position="fixed"; s.style.width=size+"px"; s.style.height=size+"px";
     s.style.left=(window.innerWidth/2+(Math.random()-0.5)*320)+"px";
-    s.style.top="10px";s.style.background=`hsl(${Math.random()*360},90%,60%)`;
-    s.style.borderRadius=Math.random()<0.5?"50%":"4px";
-    s.style.pointerEvents="none";s.style.opacity="1";
+    s.style.top="10px"; s.style.background=`hsl(${Math.random()*360},90%,60%)`;
+    s.style.borderRadius=Math.random()<0.45?"50%":"4px";
+    s.style.pointerEvents="none"; s.style.opacity="1";
     document.body.appendChild(s);
-    const dx=(Math.random()-0.5)*3,dy=2+Math.random()*4,rot=(Math.random()-0.5)*10;
-    let y=0,x=0,r=0;
-    (function anim(){
-      y+=dy;x+=dx;r+=rot;
+    const dx=(Math.random()-0.5)*3.2, dy=2.2+Math.random()*4.2, rot=(Math.random()-0.5)*12;
+    let y=0,x=0,r=0; (function anim(){
+      y+=dy; x+=dx; r+=rot;
       s.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
-      s.style.opacity-=0.006;
+      s.style.opacity-=0.0055;
       if(s.style.opacity<=0){s.remove();return;}
       requestAnimationFrame(anim);
     })();
   }
 }
 
-/* משחק */
+/* ===== עזר ===== */
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function announce(m,t="info"){statusEl.textContent=m;}
+function announce(msg,tone="info"){
+  statusEl.textContent=msg;
+  statusEl.style.background = tone==="good" ? "#ecfdf5" : tone==="bad" ? "#fef2f2" : "#eef7ff";
+  statusEl.style.color      = tone==="good" ? "#065f46" : tone==="bad" ? "#991b1b" : "#1e3a8a";
+}
+function shake(node){
+  node.animate(
+    [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
+    {duration:220}
+  );
+}
 
+/* ===== בעיה חדשה ===== */
 function newProblem(){
-  let a=randInt(0,10),b=randInt(0,10);
-  while(a+b>20||a+b<2){a=randInt(0,10);b=randInt(0,10);}
-  state.a=a;state.b=b;state.sum=a+b;
+  let a=randInt(0,10), b=randInt(0,10);
+  while(a+b>20 || a+b<2){ a=randInt(0,10); b=randInt(0,10); }
+  state.a=a; state.b=b; state.sum=a+b;
   eqEl.textContent=`${a} + ${b} = ?`;
-  tray.innerHTML="";gridA.innerHTML="";gridB.innerHTML="";answers.innerHTML="";
-  for(let i=0;i<24;i++){tray.appendChild(makeApple());}
-  const opts=new Set([state.sum]);while(opts.size<3){opts.add(Math.max(0,Math.min(20,state.sum+randInt(-3,3))));}
+  tray.innerHTML=""; gridA.innerHTML=""; gridB.innerHTML=""; answers.innerHTML="";
+  announce("הכניסו לכל סל את הכמות המתאימה, ואז בחרו תשובה.");
+
+  for(let i=0;i<26;i++){ tray.appendChild(createApple()); }
+
+  const opts=new Set([state.sum]); const deltas=[-4,-3,-2,-1,1,2,3,4];
+  while(opts.size<3){ const d=Math.max(0,Math.min(20,state.sum + deltas[randInt(0,deltas.length-1)])); if(d!==state.sum) opts.add(d); }
   [...opts].sort(()=>Math.random()-0.5).forEach(n=>{
-    const btn=document.createElement("button");btn.className="opt";btn.textContent=n;
-    btn.onclick=()=>check(btn,n);answers.appendChild(btn);
+    const btn=document.createElement("button"); btn.className="opt"; btn.textContent=n;
+    btn.onclick=()=>check(btn,n); answers.appendChild(btn);
   });
 }
 
+/* ===== תפוחים ===== */
 let id=1;
-function makeApple(){
-  const e=document.createElement("div");e.className="fruit";e.textContent="🍎";e.dataset.id="a"+id++;
-  e.onclick=()=>{if(e.parentElement===tray){
-      if(gridA.children.length<state.a)gridA.appendChild(e);
-      else if(gridB.children.length<state.b)gridB.appendChild(e);
-    }else tray.appendChild(e);};
+function createApple(){
+  const e=document.createElement("div");
+  e.className="fruit"; e.textContent="🍎"; e.dataset.id="a"+(id++);
+  // הקשה: נסה למלא A ואז B עם מגבלת כמות
+  e.addEventListener("click", ()=>{
+    if(e.parentElement===tray){
+      if(gridA.children.length < state.a){ gridA.appendChild(e); }
+      else if(gridB.children.length < state.b){ gridB.appendChild(e); }
+      else { speak("שני הסלים מלאים"); announce("שני הסלים מלאים","bad"); shake(basketA); shake(basketB); }
+    } else {
+      tray.appendChild(e);
+    }
+  });
+  enablePointerDrag(e);   // <<< גרירה מותאמת למגע/עכבר
   return e;
 }
 
+/* ===== גרירה בהתאמה מלאה למגע/עכבר (לא HTML5 drag) ===== */
+let dragging=null, origin=null;
+function enablePointerDrag(el){
+  el.addEventListener("pointerdown",(ev)=>{
+    ev.preventDefault();
+    el.setPointerCapture(ev.pointerId);
+    dragging=el;
+    origin = { parent: el.parentElement, next: el.nextSibling, pid: ev.pointerId };
+    el.style.position="fixed"; el.style.zIndex=9999;
+    follow(ev);
+  });
+  el.addEventListener("pointermove",(ev)=>{ if(dragging===el) follow(ev); });
+  el.addEventListener("pointerup",(ev)=>{
+    if(dragging!==el) return;
+    const x=ev.clientX, y=ev.clientY;
+    cleanup(el, origin.pid);
+    // קבע אזור יעד
+    if(isOver(basketA,x,y)){
+      if(gridA.children.length < state.a){ gridA.appendChild(el); }
+      else { origin.parent.insertBefore(el, origin.next); speak("יותר מדי בסל A"); announce("יותר מדי בסל A","bad"); shake(basketA); }
+    } else if(isOver(basketB,x,y)){
+      if(gridB.children.length < state.b){ gridB.appendChild(el); }
+      else { origin.parent.insertBefore(el, origin.next); speak("יותר מדי בסל B"); announce("יותר מדי בסל B","bad"); shake(basketB); }
+    } else if(isOver(tray,x,y)){
+      tray.appendChild(el);
+    } else {
+      // לא באזור – החזרה למקור
+      origin.parent.insertBefore(el, origin.next);
+    }
+  });
+}
+function follow(ev){
+  const r=document.body.getBoundingClientRect();
+  const half=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fruit'))/2;
+  const x=Math.min(Math.max(0, ev.clientX-half), r.width-half*2);
+  const y=Math.min(Math.max(0, ev.clientY-half), r.height-half*2);
+  dragging.style.left=x+"px"; dragging.style.top=y+"px";
+}
+function cleanup(el,pid){
+  el.releasePointerCapture?.(pid);
+  el.style.position=""; el.style.left=""; el.style.top=""; el.style.zIndex="";
+  dragging=null; origin=null;
+}
+function isOver(zone,x,y){
+  const rr=zone.getBoundingClientRect();
+  return x>=rr.left && x<=rr.right && y>=rr.top && y<=rr.bottom;
+}
+
+/* ===== בדיקה ===== */
 function check(btn,n){
   [...answers.children].forEach(b=>b.classList.remove("correct","wrong"));
-  const okA=gridA.children.length===state.a,okB=gridB.children.length===state.b;
-  if(n===state.sum&&okA&&okB){
-    btn.classList.add("correct");state.wins++;wins.textContent=state.wins;
-    announce("כל הכבוד! הצלחה","good");
-    confetti(100);speak("כל הכבוד");
+  const okA=gridA.children.length===state.a, okB=gridB.children.length===state.b;
+  if(n===state.sum && okA && okB){
+    btn.classList.add("correct");
+    state.wins=(state.wins||0)+1; wins.textContent=state.wins;
+    announce("כל הכבוד! גם הסלים נכונים וגם התשובה.","good");
+    confetti(100); speak("כל הכבוד");
   }else{
-    btn.classList.add("wrong");state.misses++;misses.textContent=state.misses;
-    announce("נסה שוב","bad");
+    btn.classList.add("wrong");
+    state.misses=(state.misses||0)+1; misses.textContent=state.misses;
+    announce("נסה שוב – בדקו כמות ותשובה.","bad");
     speak("נסה שוב");
   }
 }
 
+/* ===== אירועים ===== */
 $("#newRound").onclick=newProblem;
-$("#empty").onclick=()=>{[...gridA.children,...gridB.children].forEach(ch=>tray.appendChild(ch));};
+$("#empty").onclick=()=>{[...gridA.children,...gridB.children].forEach(ch=>tray.appendChild(ch));announce("הסלים רוקנו.");};
+document.addEventListener("keydown",(e)=>{
+  const k=e.key.toLowerCase();
+  if(k==="n"){ newProblem(); }
+  if(k==="r"){ $("#empty").click(); }
+});
+
+/* ===== הפעלה ===== */
 newProblem();
 </script>
 </body>
