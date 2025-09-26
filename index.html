@@ -3,13 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>חיבור עד 20 – שני סלים (ידית קטנה)</title>
+<title>חיבור עד 20 – שני סלים (קול)</title>
 <style>
-  :root{
-    --fruit: 52px;  /* גודל התפוח */
-    --gap: 8px;
-  }
-  body{margin:0;font-family:Arial,"Segoe UI",system-ui,sans-serif;
+  :root{ --fruit: 46px; --gap: 8px; }
+  body{margin:0;font-family:Arial,sans-serif;
        background:linear-gradient(180deg,#eaf4ff 0%,#f6fbff 40%);}
   .app{max-width:1100px;margin:auto;padding:18px;display:grid;gap:16px}
   header{background:#fff;border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.12)}
@@ -20,67 +17,33 @@
   .board{display:grid;grid-template-columns:1fr 0.8fr;gap:16px}
   @media(max-width:900px){.board{grid-template-columns:1fr}}
   .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
-
   .eq{font-size:28px;font-weight:900}
   .status{background:#eef7ff;color:#1e3a8a;padding:4px 10px;border-radius:999px;font-weight:700}
-
   .tray{min-height:150px;border:2px dashed #c7d2fe;border-radius:16px;padding:12px;background:#f8fbff}
   .grid{display:flex;flex-wrap:wrap;gap:var(--gap)}
-  .fruit{
-    width:var(--fruit);height:var(--fruit);
-    display:flex;align-items:center;justify-content:center;
-    font-size:calc(var(--fruit)*0.65);
-    background:#fff;border:1px solid #ddd;border-radius:14px;cursor:grab;
-    box-shadow:0 2px 8px rgba(0,0,0,.12);
-    user-select:none;touch-action:none;transition:transform .12s ease;
-  }
+  .fruit{width:var(--fruit);height:var(--fruit);display:flex;align-items:center;justify-content:center;
+         font-size:calc(var(--fruit)*0.65);background:#fff;border:1px solid #ddd;border-radius:14px;
+         cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.12)}
   .fruit:active{transform:scale(1.05)}
-
   .baskets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:700px){.baskets{grid-template-columns:1fr}}
-
-  /* ===== סל קש ===== */
-  .basket{
-    position:relative; min-height:240px; border-radius:18px; overflow:hidden;
-    border:2px solid #c08552; background:#fff8f0; padding:12px; isolation:isolate;
-  }
-  .basket .label{
-    position:relative; z-index:4; font-weight:900; color:#7c4a2b;
-    display:flex; align-items:center; gap:8px; margin-bottom:6px;
-  }
-  .basket::before{
-    content:""; position:absolute; inset:18% 6% 10% 6%; z-index:0; pointer-events:none;
-    background:
-      linear-gradient(90deg,#d7a273 22%,#bd8456 22% 28%,#d7a273 28% 50%,
-                             #bd8456 50% 56%,#d7a273 56% 78%,#bd8456 78% 84%,#d7a273 84%) 0 0/56px 18px,
-      linear-gradient(0deg,#bd8456 22%,#d7a273 22% 28%,#bd8456 28% 50%,
-                             #d7a273 50% 56%,#bd8456 56% 78%,#d7a273 78% 84%,#bd8456 84%) 0 0/56px 18px;
-    border-radius:14px;
-    box-shadow:inset 0 -20px 30px rgba(0,0,0,.05);
-  }
-  .basket .inner{position:absolute; inset:22% 8% 8% 8%; z-index:1}
-  .basket .inner .grid{justify-content:flex-start}
-  .basket::after{
-    content:""; position:absolute; left:5%; right:5%; top:6%; height:28px; z-index:2; pointer-events:none;
-    background:linear-gradient(180deg,#e9b789,#cc905f); border-radius:18px/14px;
-    box-shadow:inset 0 2px 0 #f4d1ae, 0 6px 10px rgba(0,0,0,.18);
-  }
-  /* ידית קטנה ועדינה */
-  .handle{
-    position:absolute; top:-6px; left:50%; transform:translateX(-50%); z-index:3; pointer-events:none;
-    width:40%; height:40px;   /* <<< מוקטן מאוד <<< */
-    border:6px solid #cc905f; border-bottom:none; border-radius:999px;
-    box-shadow:0 3px 6px rgba(0,0,0,.15), inset 0 2px 0 #e9b789;
-    background:conic-gradient(from 0deg at 50% 100%,#dba577,#c18455 25%,#dba577 50%,#c18455 75%,#dba577 100%);
-  }
-
+  .basket{position:relative;min-height:240px;border-radius:18px;overflow:hidden;
+          border:2px solid #c08552;background:#fff8f0;padding:12px;isolation:isolate}
+  .basket .label{position:relative;z-index:4;font-weight:900;color:#7c4a2b;margin-bottom:6px}
+  .basket::before{content:"";position:absolute;inset:18% 6% 10% 6%;z-index:0;pointer-events:none;
+    background:repeating-linear-gradient(90deg,#d7a273 0 28px,#bd8456 28px 56px),
+               repeating-linear-gradient(#bd8456 0 28px,#d7a273 28px 56px);
+    border-radius:14px;opacity:.9}
+  .basket .inner{position:absolute;inset:22% 8% 8% 8%;z-index:1}
+  .basket::after{content:"";position:absolute;left:5%;right:5%;top:6%;height:28px;z-index:2;
+    background:linear-gradient(180deg,#e9b789,#cc905f);border-radius:18px/14px}
+  .handle{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
+    width:40%;height:40px;border:6px solid #cc905f;border-bottom:none;border-radius:999px}
   .answers{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
   .opt{flex:1;min-width:80px;background:#eef2f7;border:2px solid transparent;border-radius:12px;padding:10px;
-       font-size:20px;font-weight:800;cursor:pointer;transition:.15s}
-  .opt:hover{transform:translateY(-1px)}
+       font-size:20px;font-weight:800;cursor:pointer}
   .opt.correct{background:#ecfdf5;border-color:#10b981;color:#065f46}
   .opt.wrong{background:#fef2f2;border-color:#ef4444;color:#991b1b}
-
   .stats{display:flex;gap:10px;margin-top:10px}
   .pill{flex:1;background:#eef2f7;border-radius:10px;padding:8px;text-align:center;font-weight:700}
   .pill.good{background:#ecfdf5;color:#065f46}
@@ -90,7 +53,7 @@
 <body>
 <div class="app">
   <header>
-    <div class="title">🍎 חיבור עד 20 – שני סלים (ידית קטנה)</div>
+    <div class="title">🍎 חיבור עד 20 – שני סלים (קול)</div>
     <div>
       <button id="empty" class="btn ghost">רוקן סלים</button>
       <button id="newRound" class="btn primary">סיבוב חדש</button>
@@ -130,16 +93,52 @@
 </div>
 
 <script>
+/* DOM */
 const $=s=>document.querySelector(s);
 const tray=$("#tray"),eqEl=$("#equation"),statusEl=$("#status"),answers=$("#answers");
-const wins=$("#wins"),misses=$("#misses"),gridA=$("#gridA"),gridB=$("#gridB"),basketA=$("#basketA"),basketB=$("#basketB");
+const wins=$("#wins"),misses=$("#misses"),gridA=$("#gridA"),gridB=$("#gridB");
+const basketA=$("#basketA"),basketB=$("#basketB");
 let state={a:0,b:0,sum:0,wins:0,misses:0};
 
+/* דיבור בקול */
+function speak(text){
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang="he-IL"; utter.rate=1; utter.pitch=1;
+  speechSynthesis.speak(utter);
+}
+
+/* קונפטי */
+function confetti(n=80){
+  for(let i=0;i<n;i++){
+    const s=document.createElement("div");
+    const size=18+Math.random()*20;
+    s.style.position="fixed";s.style.width=size+"px";s.style.height=size+"px";
+    s.style.left=(window.innerWidth/2+(Math.random()-0.5)*320)+"px";
+    s.style.top="10px";s.style.background=`hsl(${Math.random()*360},90%,60%)`;
+    s.style.borderRadius=Math.random()<0.5?"50%":"4px";
+    s.style.pointerEvents="none";s.style.opacity="1";
+    document.body.appendChild(s);
+    const dx=(Math.random()-0.5)*3,dy=2+Math.random()*4,rot=(Math.random()-0.5)*10;
+    let y=0,x=0,r=0;
+    (function anim(){
+      y+=dy;x+=dx;r+=rot;
+      s.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
+      s.style.opacity-=0.006;
+      if(s.style.opacity<=0){s.remove();return;}
+      requestAnimationFrame(anim);
+    })();
+  }
+}
+
+/* משחק */
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 function announce(m,t="info"){statusEl.textContent=m;}
+
 function newProblem(){
-  let a=randInt(0,10),b=randInt(0,10);while(a+b>20||a+b<2){a=randInt(0,10);b=randInt(0,10);}
-  state.a=a;state.b=b;state.sum=a+b;eqEl.textContent=`${a}+${b}=?`;
+  let a=randInt(0,10),b=randInt(0,10);
+  while(a+b>20||a+b<2){a=randInt(0,10);b=randInt(0,10);}
+  state.a=a;state.b=b;state.sum=a+b;
+  eqEl.textContent=`${a} + ${b} = ?`;
   tray.innerHTML="";gridA.innerHTML="";gridB.innerHTML="";answers.innerHTML="";
   for(let i=0;i<24;i++){tray.appendChild(makeApple());}
   const opts=new Set([state.sum]);while(opts.size<3){opts.add(Math.max(0,Math.min(20,state.sum+randInt(-3,3))));}
@@ -148,6 +147,7 @@ function newProblem(){
     btn.onclick=()=>check(btn,n);answers.appendChild(btn);
   });
 }
+
 let id=1;
 function makeApple(){
   const e=document.createElement("div");e.className="fruit";e.textContent="🍎";e.dataset.id="a"+id++;
@@ -157,12 +157,21 @@ function makeApple(){
     }else tray.appendChild(e);};
   return e;
 }
+
 function check(btn,n){
   [...answers.children].forEach(b=>b.classList.remove("correct","wrong"));
   const okA=gridA.children.length===state.a,okB=gridB.children.length===state.b;
-  if(n===state.sum&&okA&&okB){btn.classList.add("correct");state.wins++;wins.textContent=state.wins;announce("כל הכבוד!");}
-  else{btn.classList.add("wrong");state.misses++;misses.textContent=state.misses;announce("נסה שוב");}
+  if(n===state.sum&&okA&&okB){
+    btn.classList.add("correct");state.wins++;wins.textContent=state.wins;
+    announce("כל הכבוד! הצלחה","good");
+    confetti(100);speak("כל הכבוד");
+  }else{
+    btn.classList.add("wrong");state.misses++;misses.textContent=state.misses;
+    announce("נסה שוב","bad");
+    speak("נסה שוב");
+  }
 }
+
 $("#newRound").onclick=newProblem;
 $("#empty").onclick=()=>{[...gridA.children,...gridB.children].forEach(ch=>tray.appendChild(ch));};
 newProblem();
