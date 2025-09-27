@@ -3,33 +3,37 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>חיבור עד 20 – שני סלים (גרירה מתוקן)</title>
+<title>חיבור עד 20 – שני סלים (גרירה + לחיצה)</title>
 <style>
-  :root{ --fruit:44px; --gap:8px; }
+  :root{ --fruit:52px; --gap:8px; }
   body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#eaf4ff 0%,#f6fbff 40%);}
   .app{max-width:1100px;margin:auto;padding:18px;display:grid;gap:16px}
   header{background:#fff;border-radius:16px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
   .title{font-size:22px;font-weight:800}
   .btn{padding:8px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
   .btn.primary{background:#2563eb;color:#fff}.btn.ghost{background:#e8f0ff}
+
   .board{display:grid;grid-template-columns:1fr .9fr;gap:16px}
   @media(max-width:900px){.board{grid-template-columns:1fr}}
   .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
 
-  .eq{font-size:28px;font-weight:900}
+  /* תרגיל – LTR ומרוכז */
+  .eq{font-size:28px;font-weight:900;direction:ltr;text-align:center;letter-spacing:.5px}
   .status{background:#eef7ff;color:#1e3a8a;padding:4px 10px;border-radius:999px;font-weight:700}
 
   .tray{min-height:150px;border:2px dashed #c7d2fe;border-radius:16px;padding:12px;background:#f8fbff}
   .grid{display:flex;flex-wrap:wrap;gap:var(--gap)}
-  .fruit{width:var(--fruit);height:var(--fruit);display:flex;align-items:center;justify-content:center;
-         font-size:calc(var(--fruit)*0.65);background:#fff;border:1px solid #ddd;border-radius:14px;
-         cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.12);user-select:none;touch-action:none;transition:transform .12s}
+  .fruit{
+    width:var(--fruit);height:var(--fruit);display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--fruit)*0.65);background:#fff;border:1px solid #ddd;border-radius:14px;
+    cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.12);user-select:none;touch-action:none;transition:transform .12s
+  }
   .fruit:active{transform:scale(1.05)}
 
   .baskets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:700px){.baskets{grid-template-columns:1fr}}
 
-  /* סל – מראה נקי, ידית קטנה, שכבות מסודרות */
+  /* סל – מראה נקי, שכבות מסודרות, ידית קטנה */
   .basket{position:relative;min-height:240px;border-radius:18px;overflow:hidden;border:2px solid #c08552;background:#fff8f0;padding:12px;isolation:isolate}
   .basket .label{position:relative;z-index:4;font-weight:900;color:#7c4a2b;margin-bottom:6px}
   .basket::before{content:"";position:absolute;inset:18% 6% 10% 6%;z-index:0;pointer-events:none;
@@ -55,7 +59,7 @@
 <body>
 <div class="app">
   <header>
-    <div class="title">🍎 חיבור עד 20 – שני סלים (גרירה מתוקן)</div>
+    <div class="title">🍎 חיבור עד 20 – שני סלים (גרירה + לחיצה)</div>
     <div>
       <button id="empty" class="btn ghost">רוקן סלים</button>
       <button id="newRound" class="btn primary">סיבוב חדש</button>
@@ -104,8 +108,13 @@ let state={a:0,b:0,sum:0,wins:0,misses:0};
 
 /* ===== דיבור ===== */
 function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang="he-IL"; u.rate=1; u.pitch=1;
+  const vs=speechSynthesis.getVoices();
+  const heb=vs.find(v=>/he/i.test(v.lang));
+  if(heb) u.voice=heb;
   speechSynthesis.speak(u);
 }
 
@@ -133,31 +142,32 @@ function confetti(n=100){
 
 /* ===== עזר ===== */
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function announce(msg,tone="info"){
+function announce(msg,tone="info",speakIt=false){
   statusEl.textContent=msg;
   statusEl.style.background = tone==="good" ? "#ecfdf5" : tone==="bad" ? "#fef2f2" : "#eef7ff";
   statusEl.style.color      = tone==="good" ? "#065f46" : tone==="bad" ? "#991b1b" : "#1e3a8a";
+  if(speakIt) speak(msg);
 }
 function shake(node){
-  node.animate(
-    [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
-    {duration:220}
-  );
+  node.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],{duration:220});
 }
 
-/* ===== בעיה חדשה ===== */
+/* ===== בעיה חדשה (בלי אפס) ===== */
 function newProblem(){
-  let a=randInt(0,10), b=randInt(0,10);
-  while(a+b>20 || a+b<2){ a=randInt(0,10); b=randInt(0,10); }
+  let a=randInt(1,10), b=randInt(1,10);
+  while(a+b>20){ a=randInt(1,10); b=randInt(1,10); }
   state.a=a; state.b=b; state.sum=a+b;
   eqEl.textContent=`${a} + ${b} = ?`;
   tray.innerHTML=""; gridA.innerHTML=""; gridB.innerHTML=""; answers.innerHTML="";
-  announce("הכניסו לכל סל את הכמות המתאימה, ואז בחרו תשובה.");
+  announce("הכניסו לכל סל את הכמות המתאימה, ואז בחרו תשובה.", "info", true);
 
   for(let i=0;i<26;i++){ tray.appendChild(createApple()); }
 
   const opts=new Set([state.sum]); const deltas=[-4,-3,-2,-1,1,2,3,4];
-  while(opts.size<3){ const d=Math.max(0,Math.min(20,state.sum + deltas[randInt(0,deltas.length-1)])); if(d!==state.sum) opts.add(d); }
+  while(opts.size<3){
+    const guess=Math.max(2, Math.min(20, state.sum + deltas[randInt(0,deltas.length-1)]));
+    if(guess!==state.sum) opts.add(guess);
+  }
   [...opts].sort(()=>Math.random()-0.5).forEach(n=>{
     const btn=document.createElement("button"); btn.className="opt"; btn.textContent=n;
     btn.onclick=()=>check(btn,n); answers.appendChild(btn);
@@ -169,37 +179,44 @@ let id=1;
 function createApple(){
   const e=document.createElement("div");
   e.className="fruit"; e.textContent="🍎"; e.dataset.id="a"+(id++);
-  // הקשה: נסה למלא A ואז B עם מגבלת כמות
-  e.addEventListener("click", ()=>{
-    if(e.parentElement===tray){
-      if(gridA.children.length < state.a){ gridA.appendChild(e); }
-      else if(gridB.children.length < state.b){ gridB.appendChild(e); }
-      else { speak("שני הסלים מלאים"); announce("שני הסלים מלאים","bad"); shake(basketA); shake(basketB); }
-    } else {
-      tray.appendChild(e);
-    }
-  });
-  enablePointerDrag(e);   // <<< גרירה מותאמת למגע/עכבר
+
+  // --- גרירה עם pointer events + Tap detection ---
+  enablePointerDragOrTap(e);
   return e;
 }
 
-/* ===== גרירה בהתאמה מלאה למגע/עכבר (לא HTML5 drag) ===== */
-let dragging=null, origin=null;
-function enablePointerDrag(el){
+/* ===== גרירה + Tap (לחיצה) ===== */
+let dragging=null, origin=null, dragStart=null;
+function enablePointerDragOrTap(el){
+  const TAP_DIST=6, TAP_TIME=220; // מ״מ תנועה וזמן להיחשב כטאפ
   el.addEventListener("pointerdown",(ev)=>{
     ev.preventDefault();
     el.setPointerCapture(ev.pointerId);
     dragging=el;
     origin = { parent: el.parentElement, next: el.nextSibling, pid: ev.pointerId };
+    dragStart = { x: ev.clientX, y: ev.clientY, t: performance.now() };
     el.style.position="fixed"; el.style.zIndex=9999;
     follow(ev);
   });
-  el.addEventListener("pointermove",(ev)=>{ if(dragging===el) follow(ev); });
+  el.addEventListener("pointermove",(ev)=>{
+    if(dragging===el) follow(ev);
+  });
   el.addEventListener("pointerup",(ev)=>{
     if(dragging!==el) return;
-    const x=ev.clientX, y=ev.clientY;
+    const dt=performance.now()-dragStart.t;
+    const dx=ev.clientX-dragStart.x, dy=ev.clientY-dragStart.y;
+    const isTap = Math.hypot(dx,dy) < TAP_DIST && dt < TAP_TIME;
+
+    // ניקוי מצב גרירה לפני פעולה
     cleanup(el, origin.pid);
-    // קבע אזור יעד
+
+    if(isTap){
+      handleTap(el);
+      return;
+    }
+
+    // Drop לפי מיקום
+    const x=ev.clientX, y=ev.clientY;
     if(isOver(basketA,x,y)){
       if(gridA.children.length < state.a){ gridA.appendChild(el); }
       else { origin.parent.insertBefore(el, origin.next); speak("יותר מדי בסל A"); announce("יותר מדי בסל A","bad"); shake(basketA); }
@@ -209,11 +226,22 @@ function enablePointerDrag(el){
     } else if(isOver(tray,x,y)){
       tray.appendChild(el);
     } else {
-      // לא באזור – החזרה למקור
       origin.parent.insertBefore(el, origin.next);
     }
   });
 }
+
+function handleTap(el){
+  // מהמגש → A עד שימלא, ואז B; מסל → חזרה למגש
+  if(el.parentElement===tray){
+    if(gridA.children.length < state.a){ gridA.appendChild(el); }
+    else if(gridB.children.length < state.b){ gridB.appendChild(el); }
+    else { speak("שני הסלים מלאים"); announce("שני הסלים מלאים","bad"); shake(basketA); shake(basketB); }
+  }else{
+    tray.appendChild(el);
+  }
+}
+
 function follow(ev){
   const r=document.body.getBoundingClientRect();
   const half=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fruit'))/2;
@@ -224,7 +252,7 @@ function follow(ev){
 function cleanup(el,pid){
   el.releasePointerCapture?.(pid);
   el.style.position=""; el.style.left=""; el.style.top=""; el.style.zIndex="";
-  dragging=null; origin=null;
+  dragging=null; origin=null; dragStart=null;
 }
 function isOver(zone,x,y){
   const rr=zone.getBoundingClientRect();
@@ -238,19 +266,21 @@ function check(btn,n){
   if(n===state.sum && okA && okB){
     btn.classList.add("correct");
     state.wins=(state.wins||0)+1; wins.textContent=state.wins;
-    announce("כל הכבוד! גם הסלים נכונים וגם התשובה.","good");
-    confetti(100); speak("כל הכבוד");
+    announce("כל הכבוד! גם הסלים נכונים וגם התשובה.","good", true);
+    confetti(100);
   }else{
     btn.classList.add("wrong");
     state.misses=(state.misses||0)+1; misses.textContent=state.misses;
-    announce("נסה שוב – בדקו כמות ותשובה.","bad");
-    speak("נסה שוב");
+    announce("נסה שוב – בדקו כמות ותשובה.","bad", true);
   }
 }
 
 /* ===== אירועים ===== */
-$("#newRound").onclick=newProblem;
-$("#empty").onclick=()=>{[...gridA.children,...gridB.children].forEach(ch=>tray.appendChild(ch));announce("הסלים רוקנו.");};
+$("#newRound").onclick=()=>{ newProblem(); };
+$("#empty").onclick=()=>{
+  [...gridA.children,...gridB.children].forEach(ch=>tray.appendChild(ch));
+  announce("הסלים רוקנו.", "info", true);
+};
 document.addEventListener("keydown",(e)=>{
   const k=e.key.toLowerCase();
   if(k==="n"){ newProblem(); }
@@ -262,4 +292,3 @@ newProblem();
 </script>
 </body>
 </html>
-
